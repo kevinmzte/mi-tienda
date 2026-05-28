@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import DashboardCard from "@/components/DashboardCard";
 import QuickInfo from "@/components/QuickInfo";
+import Link from "next/link";
 
 import {
   ShoppingCart,
@@ -16,8 +17,8 @@ export default function HomePage() {
 
         <Header />
 
-        <section className="grid grid-cols-2 gap-4">
-
+        <section className="grid grid-cols-2 gap-4">   
+          <Link href="/pedidos">
           <DashboardCard
             icon={
               <ShoppingCart
@@ -31,7 +32,8 @@ export default function HomePage() {
             iconBg="bg-[#e5d8ff]"
             buttonBg="bg-purple-600"
           />
-
+          </Link>       
+          <Link href="/productos/nuevo">
           <DashboardCard
             icon={
               <Package
@@ -40,12 +42,12 @@ export default function HomePage() {
               />
             }
             title="Productos"
-            description="Administra inventario"
+            description="Agregar o ver inventario"
             bg="bg-[#eef8f1]"
             iconBg="bg-[#d9f6df]"
             buttonBg="bg-green-600"
           />
-
+          </Link>
           <DashboardCard
             icon={
               <MessageCircle
@@ -59,7 +61,7 @@ export default function HomePage() {
             iconBg="bg-[#dce8ff]"
             buttonBg="bg-blue-600"
           />
-
+          <Link href="/catalogo/mi-tienda">
           <DashboardCard
             icon={
               <BookOpen
@@ -73,7 +75,7 @@ export default function HomePage() {
             iconBg="bg-[#ffefc8]"
             buttonBg="bg-orange-500"
           />
-
+        </Link>
         </section>
 
         <QuickInfo />

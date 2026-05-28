@@ -16,17 +16,23 @@ type CardProps = {
     buttonBg,
   }: CardProps) {
     return (
-      <button
-        className={`
-          ${bg}
-          rounded-[32px]
-          p-6
-          min-h-[260px]
-          flex
-          flex-col
-          items-center
-          justify-between
-          shadow-sm
+      <div
+      className={`
+            ${bg}
+            rounded-[32px]
+            p-6
+            min-h-[260px]
+            flex
+            flex-col
+            items-center
+            justify-between
+            shadow-sm
+        
+            transition-all
+            duration-200
+        
+            active:scale-95
+            hover:shadow-md
         `}
       >
         <div
@@ -67,6 +73,6 @@ type CardProps = {
         >
           →
         </div>
-      </button>
+      </div>
     );
   }
