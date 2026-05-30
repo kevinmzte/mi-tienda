@@ -1,7 +1,12 @@
+"use client";
+
 import Header from "@/components/Header";
 import DashboardCard from "@/components/DashboardCard";
 import QuickInfo from "@/components/QuickInfo";
 import Link from "next/link";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   ShoppingCart,
@@ -11,6 +16,26 @@ import {
 } from "lucide-react";
 
 export default function HomePage() {
+  const router = useRouter();
+
+  useEffect(() => {
+
+    const logged =
+      localStorage.getItem("logged");
+  
+    if (!logged) {
+      router.push("/login");
+    }
+  
+    const user = JSON.parse(
+      localStorage.getItem("user") || "{}"
+    );
+  
+    setSlug(user.slug);
+  
+  }, []);
+  const [slug, setSlug] = useState("");
+  
   return (
     <main className="min-h-screen bg-[#f5f5f7] p-4">
       <div className="max-w-md mx-auto">
@@ -61,7 +86,7 @@ export default function HomePage() {
             iconBg="bg-[#dce8ff]"
             buttonBg="bg-blue-600"
           />
-          <Link href="/catalogo/mi-tienda">
+          <Link href={`/catalogo/${slug}`}>
           <DashboardCard
             icon={
               <BookOpen

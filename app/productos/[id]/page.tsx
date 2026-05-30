@@ -1,27 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import {
+  use,
+  useEffect,
+  useState,
+} from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import {
   ArrowLeft,
-  Eye,
   ImagePlus,
   Package,
   DollarSign,
   Boxes,
   FileText,
   Tag,
+  Trash2,
 } from "lucide-react";
 
-export default function NuevoProductoPage() {
+type Props = {
+  params: Promise<{
+    id: string;
+  }>;
+};
+
+type Producto = {
+  id: number;
+  nombre: string;
+  precio: string;
+  stock: string;
+  categoria: string;
+  descripcion: string;
+  image?: string;
+};
+
+export default function EditarProductoPage({
+  params,
+}: Props) {
+
+  const { id } = use(params);
 
   const router = useRouter();
 
   const [image, setImage] =
-    useState<string>("");
+    useState("");
 
   const [nombre, setNombre] =
     useState("");
@@ -37,6 +62,27 @@ export default function NuevoProductoPage() {
 
   const [descripcion, setDescripcion] =
     useState("");
+
+  useEffect(() => {
+
+    const products: Producto[] = JSON.parse(
+      localStorage.getItem("products") || "[]"
+    );
+
+    const product = products.find(
+      (p) => p.id === Number(id)
+    );
+
+    if (!product) return;
+
+    setNombre(product.nombre);
+    setPrecio(product.precio);
+    setStock(product.stock);
+    setCategoria(product.categoria);
+    setDescripcion(product.descripcion);
+    setImage(product.image || "");
+
+  }, [id]);
 
   const handleImageChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -57,32 +103,58 @@ export default function NuevoProductoPage() {
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (
+  const handleSave = (
     e: React.FormEvent
   ) => {
 
     e.preventDefault();
 
-    const existingProducts = JSON.parse(
+    const products: Producto[] = JSON.parse(
       localStorage.getItem("products") || "[]"
     );
 
-    const newProduct = {
-      id: Date.now(),
-      nombre,
-      precio,
-      stock,
-      categoria,
-      descripcion,
-      image,
-    };
+    const updatedProducts = products.map(
+      (product) => {
+
+        if (product.id === Number(id)) {
+
+          return {
+            ...product,
+            nombre,
+            precio,
+            stock,
+            categoria,
+            descripcion,
+            image,
+          };
+
+        }
+
+        return product;
+      }
+    );
 
     localStorage.setItem(
       "products",
-      JSON.stringify([
-        ...existingProducts,
-        newProduct,
-      ])
+      JSON.stringify(updatedProducts)
+    );
+
+    router.push("/productos");
+  };
+
+  const handleDelete = () => {
+
+    const products: Producto[] = JSON.parse(
+      localStorage.getItem("products") || "[]"
+    );
+
+    const filteredProducts = products.filter(
+      (product) => product.id !== Number(id)
+    );
+
+    localStorage.setItem(
+      "products",
+      JSON.stringify(filteredProducts)
     );
 
     router.push("/productos");
@@ -97,7 +169,7 @@ export default function NuevoProductoPage() {
         <div className="flex items-center justify-between mb-6">
 
           <Link
-            href="/"
+            href="/productos"
             className="
               bg-white
               px-5
@@ -107,18 +179,16 @@ export default function NuevoProductoPage() {
               flex
               items-center
               gap-2
-              active:scale-95
-              transition-all
             "
           >
             <ArrowLeft size={18} />
             Volver
           </Link>
 
-          <Link
-            href="/productos"
+          <button
+            onClick={handleDelete}
             className="
-              bg-green-600
+              bg-red-500
               text-white
               px-5
               py-3
@@ -131,9 +201,9 @@ export default function NuevoProductoPage() {
               transition-all
             "
           >
-            <Eye size={18} />
-            Ver Productos
-          </Link>
+            <Trash2 size={18} />
+            Eliminar
+          </button>
 
         </div>
 
@@ -141,11 +211,11 @@ export default function NuevoProductoPage() {
         <div className="mb-6">
 
           <h1 className="text-3xl font-bold">
-            Nuevo Producto
+            Editar Producto
           </h1>
 
           <p className="text-gray-500 mt-1">
-            Agrega productos a tu catálogo
+            Modifica la información
           </p>
 
         </div>
@@ -153,7 +223,7 @@ export default function NuevoProductoPage() {
         {/* FORM */}
         <form
           className="space-y-4"
-          onSubmit={handleSubmit}
+          onSubmit={handleSave}
         >
 
           {/* FOTO */}
@@ -171,8 +241,6 @@ export default function NuevoProductoPage() {
               border-2
               border-dashed
               border-gray-300
-              active:scale-95
-              transition-all
               overflow-hidden
               cursor-pointer
             "
@@ -208,7 +276,7 @@ export default function NuevoProductoPage() {
                 />
 
                 <span className="mt-3 text-gray-500 font-medium">
-                  Agregar foto
+                  Cambiar foto
                 </span>
               </>
 
@@ -219,35 +287,35 @@ export default function NuevoProductoPage() {
           {/* NOMBRE */}
           <InputCard
             icon={<Package size={20} />}
-            placeholder="Nombre del producto"
             value={nombre}
             onChange={setNombre}
+            placeholder="Nombre"
           />
 
           {/* PRECIO */}
           <InputCard
             icon={<DollarSign size={20} />}
-            placeholder="Precio"
-            type="number"
             value={precio}
             onChange={setPrecio}
+            placeholder="Precio"
+            type="number"
           />
 
           {/* STOCK */}
           <InputCard
             icon={<Boxes size={20} />}
-            placeholder="Cantidad en stock"
-            type="number"
             value={stock}
             onChange={setStock}
+            placeholder="Stock"
+            type="number"
           />
 
           {/* CATEGORIA */}
           <InputCard
             icon={<Tag size={20} />}
-            placeholder="Categoría"
             value={categoria}
             onChange={setCategoria}
+            placeholder="Categoría"
           />
 
           {/* DESCRIPCION */}
@@ -265,7 +333,7 @@ export default function NuevoProductoPage() {
                 onChange={(e) =>
                   setDescripcion(e.target.value)
                 }
-                placeholder="Descripción del producto..."
+                placeholder="Descripción..."
                 className="
                   w-full
                   outline-none
@@ -291,12 +359,11 @@ export default function NuevoProductoPage() {
               text-xl
               font-semibold
               shadow-sm
-              hover:bg-green-700
               active:scale-95
               transition-all
             "
           >
-            Guardar Producto
+            Guardar Cambios
           </button>
 
         </form>
@@ -309,17 +376,17 @@ export default function NuevoProductoPage() {
 
 type InputProps = {
   icon: React.ReactNode;
-  placeholder: string;
   value: string;
   onChange: (value: string) => void;
+  placeholder: string;
   type?: string;
 };
 
 function InputCard({
   icon,
-  placeholder,
   value,
   onChange,
+  placeholder,
   type = "text",
 }: InputProps) {
 

@@ -1,9 +1,80 @@
+"use client";
+
 import {
   ChevronRight,
 } from "lucide-react";
 
+import {
+  useEffect,
+  useState,
+} from "react";
+
+type Pedido = {
+  id: number;
+  estado: string;
+};
+
+type Producto = {
+  id: number;
+  nombre: string;
+  stock: number;
+};
+
 export default function QuickInfo() {
+
+  const [
+    pedidosPendientes,
+    setPedidosPendientes,
+  ] = useState(0);
+
+  const [
+    clientesEsperando,
+    setClientesEsperando,
+  ] = useState(0);
+
+  const [
+    productosBajoStock,
+    setProductosBajoStock,
+  ] = useState(0);
+
+  useEffect(() => {
+
+    // PEDIDOS
+    const orders: Pedido[] = JSON.parse(
+      localStorage.getItem("orders") || "[]"
+    );
+
+    // PRODUCTOS
+    const products: Producto[] = JSON.parse(
+      localStorage.getItem("products") || "[]"
+    );
+
+    // pedidos pendientes
+    const pendientes =
+      orders.filter(
+        (order) =>
+          order.estado === "pendiente"
+      ).length;
+
+    setPedidosPendientes(pendientes);
+
+    // clientes esperando respuesta
+    // usamos también pendientes
+    setClientesEsperando(pendientes);
+
+    // productos bajo stock
+    const bajoStock =
+      products.filter(
+        (product) =>
+          product.stock <= 5
+      ).length;
+
+    setProductosBajoStock(bajoStock);
+
+  }, []);
+
   return (
+
     <section
       className="
         bg-white
@@ -38,29 +109,31 @@ export default function QuickInfo() {
 
         <InfoCard
           emoji="📦"
-          text="8 pedidos pendientes"
+          text={`${pedidosPendientes} pedidos pendientes`}
           bg="bg-purple-50"
         />
 
         <InfoCard
           emoji="💬"
-          text="3 clientes esperando respuesta"
+          text={`${clientesEsperando} clientes esperando respuesta`}
           bg="bg-blue-50"
         />
 
         <InfoCard
           emoji="⚠️"
-          text="12 productos con bajo stock"
+          text={`${productosBajoStock} productos con bajo stock`}
           bg="bg-orange-50"
         />
 
       </div>
 
     </section>
+
   );
+
 }
 
-type Props = {
+type CardProps = {
   emoji: string;
   text: string;
   bg: string;
@@ -70,8 +143,10 @@ function InfoCard({
   emoji,
   text,
   bg,
-}: Props) {
+}: CardProps) {
+
   return (
+
     <div
       className={`
         ${bg}
@@ -92,5 +167,7 @@ function InfoCard({
       </span>
 
     </div>
+
   );
+
 }

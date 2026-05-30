@@ -1,4 +1,7 @@
+"use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Plus } from "lucide-react";
 
 import {
   ArrowLeft,
@@ -8,7 +11,26 @@ import {
 
 export default function ProductosPage() {
 
-  const productos: any[] = [];
+  type Producto = {
+    id: number;
+    nombre: string;
+    precio: number;
+    stock: number;
+    image: string;
+  };
+
+  const [productos, setProductos] =
+  useState<Producto[]>([]);
+
+  useEffect(() => {
+
+    const savedProducts = JSON.parse(
+      localStorage.getItem("products") || "[]"
+    );
+  
+    setProductos(savedProducts);
+  
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#f5f5f7] p-4">
@@ -31,7 +53,7 @@ export default function ProductosPage() {
               gap-2
             "
           >
-            <ArrowLeft size={18} />
+            <Plus size={18} />
             Nuevo
           </Link>
 
@@ -80,8 +102,53 @@ export default function ProductosPage() {
           <div className="space-y-4">
 
             {productos.map((producto) => (
-              <div key={producto.id}>
-                Producto
+              <div
+                key={producto.id}
+                className="
+                  bg-white
+                  rounded-[28px]
+                  p-4
+                  shadow-sm
+                  flex
+                  items-center
+                  justify-between
+                "
+              >
+
+                <div>
+
+                  <h2 className="font-bold text-lg">
+                    {producto.nombre}
+                  </h2>
+
+                  <p className="text-gray-500 text-sm">
+                    ₲ {producto.precio}
+                  </p>
+
+                  <p className="text-gray-400 text-sm mt-1">
+                    Stock: {producto.stock}
+                  </p>
+
+                </div>
+
+                <Link
+                  href={`/productos/${producto.id}`}
+                  className="
+                    bg-green-100
+                    p-3
+                    rounded-full
+                    active:scale-95
+                    transition-all
+                  "
+                >
+
+                  <Pencil
+                    size={18}
+                    className="text-green-600"
+                  />
+
+                </Link>
+
               </div>
             ))}
 

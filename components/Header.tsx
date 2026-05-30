@@ -1,9 +1,18 @@
+import { useRouter } from "next/navigation";
 import {
     Store,
     CalendarDays,
   } from "lucide-react";
   
   export default function Header() {
+    const router = useRouter();
+
+    const handleLogout = () => {
+
+      localStorage.removeItem("logged");
+
+      router.push("/login");
+    };
   
     const fecha = new Date();
   
@@ -22,7 +31,7 @@ import {
           <div>
   
             <h1 className="text-4xl font-bold tracking-tight">
-              Hola Kevin 👋
+              Bienvenido 👋
             </h1>
   
             <div className="flex items-center gap-2 mt-4 text-gray-500">
@@ -32,9 +41,33 @@ import {
               <span className="text-lg capitalize">
                 {fechaFormateada}
               </span>
-  
+      
             </div>
-  
+            <button
+              onClick={handleLogout}
+              className="
+                mt-2
+                inline-flex
+                items-center
+                gap-2
+                bg-white
+                px-4
+                py-2
+                rounded-full
+                text-sm
+                font-medium
+                text-red-500
+                shadow-sm
+                border
+                border-red-100
+                hover:bg-red-50
+                active:scale-95
+                transition-all
+              "
+            >
+              Salir
+            </button>
+            
           </div>
   
           <div className="flex flex-col items-center">

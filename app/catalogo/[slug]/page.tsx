@@ -1,4 +1,8 @@
+"use client";
+
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 import {
   ArrowLeft,
@@ -12,13 +16,55 @@ type Props = {
   }>;
 };
 
-export default async function CatalogoPage({
+export default function CatalogoPage({
   params,
 }: Props) {
 
-  const { slug } = await params;
+  const { slug } = use(params);
 
-  const productos = [];
+  type Producto = {
+    id: number;
+    nombre: string;
+    descripcion: string;
+    precio: number;
+    image?: string;
+  };
+
+  const handleShare = async () => {
+
+    const publicUrl =
+      `${window.location.origin}/tienda/${slug}`;
+  
+    try {
+  
+      await navigator.share({
+        title: "Mi tienda",
+        text: "Mira nuestro catálogo",
+        url: publicUrl,
+      });
+  
+    } catch {
+  
+      navigator.clipboard.writeText(publicUrl);
+  
+      alert("Link copiado");
+  
+    }
+  
+  };
+
+  const [productos, setProductos] =
+    useState<Producto[]>([]);
+
+  useEffect(() => {
+
+      const savedProducts = JSON.parse(
+        localStorage.getItem("products") || "[]"
+      );
+    
+      setProductos(savedProducts);
+    
+    }, []);
 
   return (
     <main className="min-h-screen bg-[#f5f5f7] p-4 pb-24">
@@ -48,6 +94,7 @@ export default async function CatalogoPage({
           </Link>
 
           <button
+            onClick={handleShare}
             className="
               bg-orange-500
               text-white
@@ -146,6 +193,74 @@ export default async function CatalogoPage({
     <div className="grid grid-cols-2 gap-4">
 
       {/* PRODUCTOS */}
+      {productos.map((producto) => (
+
+      <div
+        key={producto.id}
+        className="
+          bg-white
+          rounded-[28px]
+          overflow-hidden
+          shadow-sm
+        "
+      >
+
+        {/* FOTO */}
+        <div
+          className="
+            h-40
+            bg-gray-100
+            flex
+            items-center
+            justify-center
+          "
+        >
+
+        {producto.image ? (
+
+        <Image
+          src={producto.image}
+          alt={producto.nombre}
+          width={300}
+          height={300}
+          className="
+            w-full
+            h-full
+            object-cover
+          "
+        />
+
+        ) : (
+
+        <ShoppingBag
+          size={40}
+          className="text-orange-400"
+        />
+
+        )}
+
+        </div>
+
+        {/* INFO */}
+        <div className="p-4">
+
+          <h2 className="font-bold text-lg">
+            {producto.nombre}
+          </h2>
+
+          <p className="text-gray-500 text-sm mt-1 line-clamp-2">
+            {producto.descripcion}
+          </p>
+
+          <p className="text-orange-500 font-bold mt-3">
+            ₲ {producto.precio}
+          </p>
+
+        </div>
+
+      </div>
+
+      ))}
 
     </div>
         )}
