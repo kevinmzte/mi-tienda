@@ -1,36 +1,112 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mi Tienda
 
-## Getting Started
+Sistema web de gestión comercial desarrollado con Next.js, TypeScript y Tailwind CSS.
 
-First, run the development server:
+## Descripción
+
+Mi Tienda es una aplicación diseñada para pequeños negocios que necesitan administrar su catálogo de productos de forma sencilla. El sistema incluye un panel administrativo para gestionar productos, pedidos y clientes, además de un catálogo público orientado a la visualización de productos por parte de los clientes.
+
+## Funcionalidades
+
+### Autenticación
+
+* Registro de cuenta.
+* Inicio de sesión.
+* Protección de rutas mediante AuthGuard.
+* Validación de credenciales.
+
+### Gestión de productos
+
+* Crear productos.
+* Editar productos.
+* Eliminar productos.
+* Cargar imágenes.
+* Gestión de stock.
+* Gestión de categorías.
+* Descripciones detalladas.
+
+### Panel de control
+
+* Dashboard principal.
+* Resumen de actividad.
+* Productos con bajo stock.
+* Acceso rápido a módulos del sistema.
+
+### Pedidos
+
+* Visualización de pedidos.
+* Gestión de estados.
+* Seguimiento de pedidos pendientes.
+
+### Catálogo público
+
+* Visualización de productos.
+* Diseño adaptable para dispositivos móviles.
+* Compartición mediante URL.
+
+### WhatsApp
+
+* Acceso directo al contacto comercial mediante WhatsApp.
+
+## Tecnologías utilizadas
+
+* Next.js
+* React
+* TypeScript
+* Tailwind CSS
+* Lucide React
+* LocalStorage (persistencia local)
+
+## Instalación
+
+Clonar el repositorio:
+
+```bash
+git clone <URL_DEL_REPOSITORIO>
+```
+
+Ingresar al proyecto:
+
+```bash
+cd mi-tienda
+```
+
+Instalar dependencias:
+
+```bash
+npm install
+```
+
+Ejecutar en modo desarrollo:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Estado actual
 
-## Learn More
+Actualmente el sistema utiliza LocalStorage para almacenar la información de usuarios, productos y pedidos.
 
-To learn more about Next.js, take a look at the following resources:
+Esto permite realizar pruebas locales, pero el catálogo público solo funciona correctamente en el mismo navegador donde fueron creados los datos.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Mejoras futuras
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+* Integración con Supabase.
+* Base de datos persistente.
+* Catálogo público real.
+* Gestión avanzada de pedidos.
+* Integración completa con WhatsApp Business.
+* Estadísticas de ventas.
+* Gestión de clientes.
+* Pasarela de pagos.
+* Personalización de temas y colores.
 
-## Deploy on Vercel
+## Autor
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Proyecto desarrollado por Kevin Mazacote Silva como práctica de desarrollo web utilizando Next.js y TypeScript.
