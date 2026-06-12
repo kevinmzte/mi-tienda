@@ -1,4 +1,5 @@
 "use client";
+import AuthGuard from "@/components/AuthGuard";
 
 import {
   useEffect,
@@ -36,6 +37,7 @@ export default function CarritoPage() {
   );
 
   return (
+    <AuthGuard>
     <main>
 
       {cart.map((item) => (
@@ -58,5 +60,6 @@ export default function CarritoPage() {
       </h2>
 
     </main>
+    </AuthGuard>
   );
 }

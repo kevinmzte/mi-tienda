@@ -1,5 +1,6 @@
 "use client";
 
+import AuthGuard from "@/components/AuthGuard";
 import {
   use,
   useEffect,
@@ -14,6 +15,12 @@ import {
   Minus,
   Plus, 
   Trash2,
+  ShoppingCart,
+  CreditCard,
+  CheckCircle,
+  AlertTriangle,
+  Truck,
+  Warehouse,
 } from "lucide-react";
 
 type Props = {
@@ -47,6 +54,13 @@ export default function TiendaPage({
 
   const [productos, setProductos] =
     useState<Producto[]>([]);
+
+
+  const [showErrorModal, setShowErrorModal] =
+    useState(false);
+  
+  const [errorMessage, setErrorMessage] =
+    useState("");
 
   const [showCartMessage, setShowCartMessage] =
     useState(false);
@@ -112,7 +126,7 @@ export default function TiendaPage({
 
         setCart(cart);
       
-        setCartMessage("Producto agregado al carrito 🛒");
+        setCartMessage("Producto agregado al carrito");
 
         setShowCartMessage(true);
 
@@ -272,10 +286,27 @@ export default function TiendaPage({
   const handleBuy = () => {
 
     if (!cliente || !telefono) {
-  
-      alert("Completa los datos");
+
+      setErrorMessage(
+        "Completa tu nombre y teléfono para continuar."
+      );
+    
+      setShowErrorModal(true);
+    
       return;
-  
+    
+    }
+
+    if (!/^\d{8,12}$/.test(telefono)) {
+
+      setErrorMessage(
+        "Ingresa un número de teléfono válido (8 a 12 dígitos)."
+      );
+    
+      setShowErrorModal(true);
+    
+      return;
+    
     }
   
     // obtener carrito
@@ -284,10 +315,15 @@ export default function TiendaPage({
     );
   
     if (cart.length === 0) {
-  
-      alert("El carrito está vacío");
+
+      setErrorMessage(
+        "Tu carrito está vacío."
+      );
+    
+      setShowErrorModal(true);
+    
       return;
-  
+    
     }
   
     // obtener pedidos
@@ -389,7 +425,7 @@ export default function TiendaPage({
       setShowSuccessModal(false);
     
       window.open(
-        `https://wa.me/595981000000?text=${encodeURIComponent(mensaje)}`,
+        `https://wa.me/595984303286?text=${encodeURIComponent(mensaje)}`,
         "_blank"
       );
     
@@ -466,19 +502,61 @@ export default function TiendaPage({
               bg-[#fff7e9]
               rounded-3xl
               p-4
+              space-y-3
             "
           >
 
-            <p className="text-sm text-gray-700">
-              📦 Entregas en el día
-            </p>
+            <div className="flex items-center gap-3">
 
-            <p className="text-sm text-gray-700 mt-1">
-              💳 Transferencia / efectivo
-            </p>
+              <div
+                className="
+                  w-9
+                  h-9
+                  rounded-full
+                  bg-orange-100
+                  flex
+                  items-center
+                  justify-center
+                "
+              >
+                <Truck
+                  size={18}
+                  className="text-orange-500"
+                />
+              </div>
+
+              <span className="text-sm text-gray-700 font-medium">
+                Entregas en el día
+              </span>
+
+            </div>
+
+            <div className="flex items-center gap-3">
+
+              <div
+                className="
+                  w-9
+                  h-9
+                  rounded-full
+                  bg-green-100
+                  flex
+                  items-center
+                  justify-center
+                "
+              >
+                <CreditCard
+                  size={18}
+                  className="text-green-600"
+                />
+              </div>
+
+              <span className="text-sm text-gray-700 font-medium">
+                Transferencia o efectivo
+              </span>
+
+            </div>
 
           </div>
-
         </div>
 
       </section>
@@ -714,7 +792,7 @@ export default function TiendaPage({
         "
         >
 
-        🛒
+        <ShoppingCart size={22} />
 
         {cart.length}
 
@@ -965,21 +1043,32 @@ className="
                 "
               />
 
-              <input
-                type="text"
-                placeholder="Tu teléfono"
-                value={telefono}
-                onChange={(e) =>
-                  setTelefono(e.target.value)
+            <input
+              type="tel"
+              placeholder="Tu teléfono"
+              value={telefono}
+              onChange={(e) => {
+
+                // solo números
+                const value =
+                  e.target.value.replace(/\D/g, "");
+
+                // máximo 12 dígitos
+                if (value.length <= 12) {
+
+                  setTelefono(value);
+
                 }
-                className="
-                  w-full
-                  bg-[#f5f5f7]
-                  rounded-2xl
-                  p-4
-                  outline-none
-                "
-              />
+
+              }}
+              className="
+                w-full
+                bg-[#f5f5f7]
+                rounded-2xl
+                p-4
+                outline-none
+              "
+            />
 
             </div>
 
@@ -1088,7 +1177,7 @@ className="
         mx-auto
       "
     >
-      ✅
+      <CheckCircle size={22} />
     </div>
 
     <h2 className="text-2xl font-bold mt-5">
@@ -1170,7 +1259,7 @@ className="
         mx-auto
       "
     >
-      🛒
+      <ShoppingCart size={22} />
     </div>
 
     <h2 className="text-2xl font-bold mt-5">
@@ -1196,6 +1285,79 @@ className="
         font-semibold
         active:scale-95
         transition-all
+      "
+    >
+      Entendido
+    </button>
+
+  </div>
+
+</div>
+
+)}
+
+{/* ERROR MODAL */}
+{showErrorModal && (
+
+<div
+  className="
+    fixed
+    inset-0
+    bg-black/40
+    flex
+    items-center
+    justify-center
+    z-50
+    p-4
+  "
+>
+
+  <div
+    className="
+      bg-white
+      rounded-[32px]
+      p-6
+      w-full
+      max-w-sm
+      text-center
+    "
+  >
+
+    <div
+      className="
+        w-20
+        h-20
+        rounded-full
+        bg-red-100
+        flex
+        items-center
+        justify-center
+        mx-auto
+      "
+    >
+      <AlertTriangle size={22} />
+    </div>
+
+    <h2 className="text-2xl font-bold mt-5">
+      Atención
+    </h2>
+
+    <p className="text-gray-500 mt-3">
+      {errorMessage}
+    </p>
+
+    <button
+      onClick={() =>
+        setShowErrorModal(false)
+      }
+      className="
+        w-full
+        bg-red-500
+        text-white
+        rounded-2xl
+        p-4
+        mt-6
+        font-semibold
       "
     >
       Entendido

@@ -1,5 +1,6 @@
 "use client";
 
+import AuthGuard from "@/components/AuthGuard";
 import Header from "@/components/Header";
 import DashboardCard from "@/components/DashboardCard";
 import QuickInfo from "@/components/QuickInfo";
@@ -35,8 +36,14 @@ export default function HomePage() {
   
   }, []);
   const [slug, setSlug] = useState("");
+
+  const user = JSON.parse(
+    localStorage.getItem("user") || "{}"
+  );
   
+  const phone = user.phone;
   return (
+    <AuthGuard>
     <main className="min-h-screen bg-[#f5f5f7] p-4">
       <div className="max-w-md mx-auto">
 
@@ -74,18 +81,20 @@ export default function HomePage() {
           />
           </Link>
           <DashboardCard
+          
             icon={
               <MessageCircle
                 size={46}
                 className="text-blue-600"
               />
             }
-            title="WhatsApp"
-            description="Habla con clientes"
+            title="Chat"
+            description="Automatización completa(Proximamente)"
             bg="bg-[#eef4ff]"
             iconBg="bg-[#dce8ff]"
             buttonBg="bg-blue-600"
           />
+          
           <Link href={`/catalogo/${slug}`}>
           <DashboardCard
             icon={
@@ -107,5 +116,6 @@ export default function HomePage() {
 
       </div>
     </main>
+    </AuthGuard>
   );
 }

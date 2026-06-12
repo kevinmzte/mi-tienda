@@ -1,9 +1,18 @@
 "use client";
 
-import { useState } from "react";
+
+import {
+  useState,
+  useEffect,
+} from "react";
+
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import {
+  Eye,
+  EyeOff,
+} from "lucide-react";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -17,43 +26,116 @@ export default function LoginPage() {
   const [error, setError] =
   useState("");
 
-  const handleLogin = (
-    e: React.FormEvent
-  ) => {
-  
-    e.preventDefault();
-  
-    setError("");
-  
-    const user = JSON.parse(
-      localStorage.getItem("user") || "{}"
-    );
-  
-    // NO EXISTE USUARIO
-    if (username !== user.username) {
-  
-      setError("La cuenta no existe");
-  
-      return;
-    }
-  
-    // PASSWORD INCORRECTA
-    if (password !== user.password) {
-  
-      setError("Contraseña incorrecta");
-  
-      return;
-    }
-  
-    // LOGIN OK
-    localStorage.setItem(
-      "logged",
-      "true"
-    );
-  
-    router.push("/");
-  
-  };
+  const [showPassword, setShowPassword] =
+  useState(false);
+
+  const [attempts, setAttempts] =
+    useState(0);
+    useEffect(() => {
+
+      const logged =
+        localStorage.getItem("logged");
+    
+      if (logged === "true") {
+    
+        router.push("/");
+    
+      }
+    
+    }, [router]);
+
+    const handleLogin = (
+      e: React.FormEvent
+    ) => {
+    
+      e.preventDefault();
+    
+      setError("");
+    
+      if (
+        !username.trim() ||
+        !password.trim()
+      ) {
+    
+        setError(
+          "Completa usuario y contraseña."
+        );
+    
+        return;
+      }
+    
+      if (username.length < 4) {
+    
+        setError(
+          "El usuario debe tener al menos 4 caracteres."
+        );
+    
+        return;
+      }
+    
+      if (password.length < 6) {
+    
+        setError(
+          "La contraseña debe tener al menos 6 caracteres."
+        );
+    
+        return;
+      }
+    
+      if (attempts >= 5) {
+    
+        setError(
+          "Demasiados intentos fallidos."
+        );
+    
+        return;
+      }
+    
+      const user = JSON.parse(
+        localStorage.getItem("user") || "{}"
+      );
+    
+      if (username !== user.username) {
+    
+        setAttempts(
+          (prev) => prev + 1
+        );
+    
+        setError(
+          "La cuenta no existe."
+        );
+    
+        return;
+      }
+    
+      if (password !== user.password) {
+    
+        setAttempts(
+          (prev) => prev + 1
+        );
+    
+        setError(
+          "Contraseña incorrecta."
+        );
+    
+        return;
+      }
+    
+      setAttempts(0);
+    
+      localStorage.setItem(
+        "logged",
+        "true"
+      );
+    
+      localStorage.setItem(
+        "loginDate",
+        Date.now().toString()
+      );
+    
+      router.push("/");
+    
+    };
   return (
     <main className="min-h-screen bg-[#f5f5f7] flex items-center justify-center p-4">
 
@@ -118,8 +200,14 @@ export default function LoginPage() {
               "
             />
 
+            <div className="relative">
+
             <input
-              type="password"
+              type={
+                showPassword
+                  ? "text"
+                  : "password"
+              }
               value={password}
               onChange={(e) =>
                 setPassword(e.target.value)
@@ -130,9 +218,36 @@ export default function LoginPage() {
                 bg-[#f5f5f7]
                 rounded-2xl
                 p-4
+                pr-12
                 outline-none
               "
             />
+
+            <button
+              type="button"
+              onClick={() =>
+                setShowPassword(
+                  !showPassword
+                )
+              }
+              className="
+                absolute
+                right-4
+                top-1/2
+                -translate-y-1/2
+                text-gray-500
+              "
+            >
+
+              {showPassword ? (
+                <EyeOff size={20} />
+              ) : (
+                <Eye size={20} />
+              )}
+
+            </button>
+
+            </div>
 
             <button
               type="submit"
@@ -147,7 +262,7 @@ export default function LoginPage() {
                 transition-all
               "
             >
-              Entrar
+              Entrar al Panel
             </button>
 
           </form>
@@ -172,6 +287,22 @@ export default function LoginPage() {
         </section>
 
       </div>
+      {attempts > 0 && (
+
+        <p
+          className="
+            text-center
+            text-xs
+            text-gray-500
+            mt-2
+          "
+        >
+          Intentos restantes:
+          {" "}
+          {5 - attempts}
+        </p>
+
+        )}
 
     </main>
   );

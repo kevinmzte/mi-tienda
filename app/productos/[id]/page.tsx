@@ -1,5 +1,7 @@
 "use client";
 
+import AuthGuard from "@/components/AuthGuard";
+
 import {
   use,
   useEffect,
@@ -19,6 +21,7 @@ import {
   FileText,
   Tag,
   Trash2,
+  AlertTriangle,
 } from "lucide-react";
 
 type Props = {
@@ -61,6 +64,12 @@ export default function EditarProductoPage({
     useState("");
 
   const [descripcion, setDescripcion] =
+    useState("");
+
+  const [showErrorModal, setShowErrorModal] =
+    useState(false);
+  
+  const [errorMessage, setErrorMessage] =
     useState("");
 
   useEffect(() => {
@@ -108,6 +117,62 @@ export default function EditarProductoPage({
   ) => {
 
     e.preventDefault();
+
+    if (
+      !nombre.trim() ||
+      !precio.trim() ||
+      !stock.trim() ||
+      !categoria.trim() ||
+      !descripcion.trim()
+    ) {
+  
+      setErrorMessage(
+        "Completa todos los campos obligatorios."
+      );
+  
+      setShowErrorModal(true);
+  
+      return;
+  
+    }
+  
+    if (!image) {
+  
+      setErrorMessage(
+        "Debes agregar una imagen del producto."
+      );
+  
+      setShowErrorModal(true);
+  
+      return;
+  
+    }
+  
+    // precio inválido
+    if (Number(precio) <= 0) {
+  
+      setErrorMessage(
+        "El precio debe ser mayor a cero."
+      );
+  
+      setShowErrorModal(true);
+  
+      return;
+  
+    }
+  
+    // stock inválido
+    if (Number(stock) < 0) {
+  
+      setErrorMessage(
+        "El stock no puede ser negativo."
+      );
+  
+      setShowErrorModal(true);
+  
+      return;
+  
+    }
 
     const products: Producto[] = JSON.parse(
       localStorage.getItem("products") || "[]"
@@ -161,6 +226,7 @@ export default function EditarProductoPage({
   };
 
   return (
+    <AuthGuard>
     <main className="min-h-screen bg-[#f5f5f7] p-4 pb-24">
 
       <div className="max-w-md mx-auto">
@@ -290,9 +356,12 @@ export default function EditarProductoPage({
             value={nombre}
             onChange={setNombre}
             placeholder="Nombre"
+
+            
           />
 
           {/* PRECIO */}
+          
           <InputCard
             icon={<DollarSign size={20} />}
             value={precio}
@@ -369,8 +438,83 @@ export default function EditarProductoPage({
         </form>
 
       </div>
+      {showErrorModal && (
+
+      <div
+        className="
+          fixed
+          inset-0
+          bg-black/40
+          flex
+          items-center
+          justify-center
+          z-50
+          p-4
+        "
+      >
+
+        <div
+          className="
+            bg-white
+            rounded-[32px]
+            p-6
+            w-full
+            max-w-sm
+            text-center
+          "
+        >
+
+          <div
+            className="
+              w-20
+              h-20
+              rounded-full
+              bg-red-100
+              flex
+              items-center
+              justify-center
+              mx-auto
+            "
+          >
+            <AlertTriangle
+            size={22}
+            className="text-orange-600"
+          />
+          </div>
+
+          <h2 className="text-2xl font-bold mt-5">
+            Datos incompletos
+          </h2>
+
+          <p className="text-gray-500 mt-3">
+            {errorMessage}
+          </p>
+
+          <button
+            onClick={() =>
+              setShowErrorModal(false)
+            }
+            className="
+              w-full
+              bg-green-600
+              text-white
+              rounded-2xl
+              p-4
+              mt-6
+              font-semibold
+            "
+          >
+            Entendido
+          </button>
+
+        </div>
+
+      </div>
+
+      )}
 
     </main>
+    </AuthGuard>
   );
 }
 

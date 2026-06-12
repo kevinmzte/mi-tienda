@@ -1,3 +1,7 @@
+import {
+  ChevronRight,
+} from "lucide-react";
+
 type CardProps = {
     icon: React.ReactNode;
     title: string;
@@ -71,7 +75,10 @@ type CardProps = {
             text-white
           `}
         >
-          →
+          <ChevronRight
+            size={20}
+            className="text-white-600"
+          />
         </div>
       </div>
     );

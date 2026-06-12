@@ -1,4 +1,6 @@
 "use client";
+
+import AuthGuard from "@/components/AuthGuard";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus } from "lucide-react";
@@ -33,6 +35,7 @@ export default function ProductosPage() {
   }, []);
 
   return (
+    <AuthGuard>
     <main className="min-h-screen bg-[#f5f5f7] p-4">
 
       <div className="max-w-md mx-auto">
@@ -159,5 +162,6 @@ export default function ProductosPage() {
       </div>
 
     </main>
+    </AuthGuard>
   );
 }

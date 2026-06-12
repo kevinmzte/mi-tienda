@@ -1,5 +1,6 @@
 "use client";
 
+import AuthGuard from "@/components/AuthGuard";
 import {
   useEffect,
   useState,
@@ -8,7 +9,7 @@ import {
 import Link from "next/link";
 
 import {
-  ArrowLeft,
+  ChevronLeft,
   ClipboardList,
   Check,
   MessageCircle,
@@ -136,6 +137,7 @@ export default function PedidosPage() {
   };
   
   return (
+    <AuthGuard>
     <main className="min-h-screen bg-[#f5f5f7] p-4 pb-24">
 
       <div className="max-w-md mx-auto">
@@ -158,7 +160,7 @@ export default function PedidosPage() {
               transition-all
             "
           >
-            <ArrowLeft size={18} />
+            <ChevronLeft size={18} />
             Volver
           </Link>
 
@@ -447,5 +449,6 @@ export default function PedidosPage() {
       </div>
 
     </main>
+    </AuthGuard>
   );
 }

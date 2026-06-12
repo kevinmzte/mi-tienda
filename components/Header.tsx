@@ -31,7 +31,7 @@ import {
           <div>
   
             <h1 className="text-4xl font-bold tracking-tight">
-              Bienvenido 👋
+              Bienvenido
             </h1>
   
             <div className="flex items-center gap-2 mt-4 text-gray-500">
@@ -89,5 +89,6 @@ import {
         </div>
   
       </section>
+      
     );
   }

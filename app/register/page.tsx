@@ -9,6 +9,9 @@ import {
   Store,
   User,
   Lock,
+  Check,
+  XCircle,
+  Phone,
 } from "lucide-react";
 
 export default function RegisterPage() {
@@ -23,37 +26,210 @@ export default function RegisterPage() {
 
   const [password, setPassword] =
     useState("");
-    const [showError, setShowError] =
-  useState(false);
 
-const [errorMessage, setErrorMessage] =
-  useState("");
+  const [showError, setShowError] =
+    useState(false);
 
-const [showSuccess, setShowSuccess] =
-  useState(false);
+  const [errorMessage, setErrorMessage] =
+    useState("");
+
+  const [showSuccess, setShowSuccess] =
+    useState(false);
+
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
+
+  const [phone, setPhone] =
+    useState("");
+
 
   const handleRegister = (
     e: React.FormEvent
   ) => {
-
+  
     e.preventDefault();
+  
+    const cleanStore =
+      store.trim();
+  
+    const cleanUsername =
+      username.trim();
+  
+    const cleanPassword =
+      password.trim();
 
-    const slug = store
-      .toLowerCase()
-      .replace(/\s+/g, "-");
+    const cleanPhone =
+      phone.trim();
+  
+    // campos vacíos
+    if (
+      !cleanStore ||
+      !cleanUsername ||
+      !cleanPassword
+    ) {
+  
+      setErrorMessage(
+        "Completa todos los campos."
+      );
+  
+      setShowError(true);
+  
+      return;
+    }
+  
+    // tienda muy corta
+    if (cleanStore.length < 3) {
+  
+      setErrorMessage(
+        "El nombre de la tienda debe tener al menos 3 caracteres."
+      );
+  
+      setShowError(true);
+  
+      return;
+    }
+  
+    // usuario muy corto
+    if (cleanUsername.length < 4) {
+  
+      setErrorMessage(
+        "El usuario debe tener al menos 4 caracteres."
+      );
+  
+      setShowError(true);
+  
+      return;
+    }
+  
+    // solo letras, números y _
+    if (
+      !/^[a-zA-Z0-9_]+$/.test(
+        cleanUsername
+      )
+    ) {
+  
+      setErrorMessage(
+        "El usuario solo puede contener letras, números y guiones bajos."
+      );
+  
+      setShowError(true);
+  
+      return;
+    }
+  
+          // contraseña mínima
+      if (cleanPassword.length < 6) {
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify({
-        username,
-        password,
-        store,
-        slug,
-      })
+        setErrorMessage(
+          "La contraseña debe tener al menos 6 caracteres."
+        );
+
+        setShowError(true);
+
+        return;
+      }
+
+      if (
+        !/[a-zA-Z0-9]/.test(cleanStore)
+      ) {
+      
+        setErrorMessage(
+          "Ingresa un nombre de tienda válido."
+        );
+      
+        setShowError(true);
+      
+        return;
+      }
+
+      // confirmar contraseña
+      if (
+        cleanPassword !==
+        confirmPassword.trim()
+      ) {
+
+        setErrorMessage(
+          "Las contraseñas no coinciden."
+        );
+
+        setShowError(true);
+
+        return;
+      }
+      if (!cleanPhone) {
+
+        setErrorMessage(
+          "Ingresa un número de WhatsApp."
+        );
+      
+        setShowError(true);
+      
+        return;
+      }
+
+      if (
+        !/^\d+$/.test(cleanPhone)
+      ) {
+      
+        setErrorMessage(
+          "El teléfono solo puede contener números."
+        );
+      
+        setShowError(true);
+      
+        return;
+      }
+      if (
+        cleanPhone.length < 10
+      ) {
+      
+        setErrorMessage(
+          "Ingresa un número válido."
+        );
+      
+        setShowError(true);
+      
+        return;
+      }
+  
+    const existingUser = JSON.parse(
+      localStorage.getItem("user") || "null"
     );
-
-
+  
+    // usuario ya registrado
+    if (
+      existingUser &&
+      existingUser.username ===
+        cleanUsername
+    ) {
+  
+      setErrorMessage(
+        "Ese nombre de usuario ya está registrado."
+      );
+  
+      setShowError(true);
+  
+      return;
+    }
+  
+    const slug = cleanStore
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
+  
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          username: cleanUsername,
+          password: cleanPassword,
+          store: cleanStore,
+          phone: cleanPhone,
+          slug,
+        })
+      );
+  
     setShowSuccess(true);
+  
   };
 
   return (
@@ -125,6 +301,21 @@ const [showSuccess, setShowSuccess] =
               value={password}
               onChange={setPassword}
             />
+            <InputCard
+              icon={<Lock size={20} />}
+              placeholder="Confirmar contraseña"
+              type="password"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+            />
+
+          <InputCard
+            icon={<Phone size={20} />}
+            placeholder="WhatsApp (Ej: 595981123456)"
+            value={phone}
+            onChange={setPhone}
+            type="tel"
+          />
 
             {/* BUTTON */}
             <button
@@ -206,7 +397,10 @@ const [showSuccess, setShowSuccess] =
         mx-auto
       "
     >
-      ❌
+      <XCircle
+        size={40}
+        className="text-red-500"
+      />
     </div>
 
     <h2 className="text-2xl font-bold mt-5">
@@ -279,7 +473,7 @@ const [showSuccess, setShowSuccess] =
         mx-auto
       "
     >
-      ✅
+      <Check size={18} />
     </div>
 
     <h2 className="text-2xl font-bold mt-5">
@@ -356,7 +550,9 @@ function InputCard({
         type={type}
         value={value}
         onChange={(e) =>
-          onChange(e.target.value)
+          onChange(
+            e.target.value.replace(/^\s+/, "")
+          )
         }
         placeholder={placeholder}
         className="

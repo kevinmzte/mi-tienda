@@ -2,6 +2,9 @@
 
 import {
   ChevronRight,
+  Package,
+  MessageCircle,
+  AlertTriangle,
 } from "lucide-react";
 
 import {
@@ -108,22 +111,37 @@ export default function QuickInfo() {
       <div className="space-y-3 mt-6">
 
         <InfoCard
-          emoji="📦"
-          text={`${pedidosPendientes} pedidos pendientes`}
-          bg="bg-purple-50"
-        />
+        icon={
+          <Package
+            size={22}
+            className="text-purple-600"
+          />
+        }
+        text={`${pedidosPendientes} pedidos pendientes`}
+        bg="bg-purple-50"
+      />
 
-        <InfoCard
-          emoji="💬"
-          text={`${clientesEsperando} clientes esperando respuesta`}
-          bg="bg-blue-50"
-        />
+      <InfoCard
+        icon={
+          <MessageCircle
+            size={22}
+            className="text-blue-600"
+          />
+        }
+        text={`${clientesEsperando} clientes esperando respuesta`}
+        bg="bg-blue-50"
+      />
 
-        <InfoCard
-          emoji="⚠️"
-          text={`${productosBajoStock} productos con bajo stock`}
-          bg="bg-orange-50"
-        />
+      <InfoCard
+        icon={
+          <AlertTriangle
+            size={22}
+            className="text-orange-600"
+          />
+        }
+        text={`${productosBajoStock} productos con bajo stock`}
+        bg="bg-orange-50"
+      />
 
       </div>
 
@@ -134,13 +152,13 @@ export default function QuickInfo() {
 }
 
 type CardProps = {
-  emoji: string;
+  icon: React.ReactNode;
   text: string;
   bg: string;
 };
 
 function InfoCard({
-  emoji,
+  icon,
   text,
   bg,
 }: CardProps) {
@@ -158,9 +176,20 @@ function InfoCard({
       `}
     >
 
-      <span className="text-2xl">
-        {emoji}
-      </span>
+    <div
+      className="
+        w-10
+        h-10
+        rounded-xl
+        bg-white
+        flex
+        items-center
+        justify-center
+        shadow-sm
+      "
+    >
+      {icon}
+    </div>
 
       <span className="font-medium text-[16px]">
         {text}

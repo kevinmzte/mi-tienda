@@ -1,11 +1,12 @@
 "use client";
 
+import AuthGuard from "@/components/AuthGuard";
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 import {
-  ArrowLeft,
+  ChevronLeft,
   Share2,
   ShoppingBag,
 } from "lucide-react";
@@ -67,6 +68,7 @@ export default function CatalogoPage({
     }, []);
 
   return (
+    <AuthGuard>
     <main className="min-h-screen bg-[#f5f5f7] p-4 pb-24">
 
       <div className="max-w-md mx-auto">
@@ -89,7 +91,7 @@ export default function CatalogoPage({
               transition-all
             "
           >
-            <ArrowLeft size={18} />
+             <ChevronLeft size={18} />
             Volver
           </Link>
 
@@ -268,6 +270,7 @@ export default function CatalogoPage({
 
   
     </main>
+    </AuthGuard>
   );
 }
 
